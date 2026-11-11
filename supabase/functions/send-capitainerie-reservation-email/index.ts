@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
 type ReservationPayload = {
   lastName?: string;
@@ -45,7 +46,8 @@ serve(async (req) => {
       return json({ error: validationError }, 400);
     }
 
-    const to = Deno.env.get("CAPITAINERIE_EMAIL") || "capitainerie@marinamonastir.tn";
+    const rawTo = Deno.env.get("CAPITAINERIE_EMAIL") || "capitainerie@marinamonastir.tn";
+    const to = rawTo.split(",").map((s) => s.trim()).filter(Boolean);
     const from =
       Deno.env.get("EMAIL_FROM") || "Marina Cap Monastir <reservations@marinamonastir.tn>";
     const replyTo = payload.email?.trim();
@@ -54,6 +56,44 @@ serve(async (req) => {
     const text = buildTextEmail(payload, reservationNumber);
     const html = buildHtmlEmail(payload, reservationNumber);
 
+    // 1. Also persist in database (guests & boat_stays)
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseKey =
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || Deno.env.get("SUPABASE_ANON_KEY");
+    if (supabaseUrl && supabaseKey) {
+      try {
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        const { error: rpcErr } = await supabase.rpc("create_port_reservation", {
+          p_last_name: payload.lastName,
+          p_first_name: payload.firstName,
+          p_date_of_birth: payload.dateOfBirth,
+          p_nationality: payload.nationality,
+          p_phone: payload.phone,
+          p_email: payload.email,
+          p_boat_name: payload.boatName,
+          p_flag: payload.flag,
+          p_length: typeof payload.length === "number" ? payload.length : parseFloat(payload.length || "0"),
+          p_width: typeof payload.width === "number" ? payload.width : parseFloat(payload.width || "0"),
+          p_draught: typeof payload.draught === "number" ? payload.draught : parseFloat(payload.draught || "0"),
+          p_boat_type: payload.boatType,
+          p_check_in: payload.checkIn,
+          p_check_out: payload.checkOut,
+          p_deposit_amount: typeof payload.depositAmount === "number" ? payload.depositAmount : parseFloat(payload.depositAmount || "0"),
+          p_deposit_currency: payload.depositCurrency,
+          p_special_requirements: payload.specialRequirements || null,
+          p_newsletter: payload.newsletter || false,
+        });
+        if (rpcErr) {
+          console.error("[CapitainerieEmail] RPC error:", rpcErr);
+        } else {
+          console.log("[CapitainerieEmail] Successfully recorded in boat_stays & guests");
+        }
+      } catch (dbErr) {
+        console.error("[CapitainerieEmail] DB save error (non-fatal):", dbErr);
+      }
+    }
+
+    // 2. Send email via Resend
     const apiKey = Deno.env.get("EMAIL_PROVIDER_API_KEY") || Deno.env.get("RESEND_API_KEY");
     if (apiKey) {
       const emailResult = await sendWithResend({
@@ -148,7 +188,7 @@ async function sendWithResend({
 }: {
   apiKey: string;
   from: string;
-  to: string;
+  to: string[];
   replyTo?: string;
   subject: string;
   text: string;
@@ -162,7 +202,7 @@ async function sendWithResend({
     },
     body: JSON.stringify({
       from,
-      to: [to],
+      to,
       reply_to: replyTo ? [replyTo] : undefined,
       subject,
       text,
