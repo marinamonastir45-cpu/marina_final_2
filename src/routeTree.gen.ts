@@ -29,6 +29,7 @@ import { Route as AdminInvoicesRouteImport } from './routes/admin.invoices'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as AdminPortReservationsRouteImport } from './routes/admin.port-reservations'
 import { Route as AdminPortTarifsRouteImport } from './routes/admin.port-tarifs'
 import { Route as AdminReservationsRouteImport } from './routes/admin.reservations'
 import { Route as AdminRoomsRouteImport } from './routes/admin.rooms'
@@ -147,6 +148,11 @@ const AdminMessagesRoute = AdminMessagesRouteImport.update({
 const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPortReservationsRoute = AdminPortReservationsRouteImport.update({
+  id: '/port-reservations',
+  path: '/port-reservations',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPortTarifsRoute = AdminPortTarifsRouteImport.update({
@@ -268,6 +274,7 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/port-reservations': typeof AdminPortReservationsRoute
   '/admin/port-tarifs': typeof AdminPortTarifsRoute
   '/admin/reservations': typeof AdminReservationsRoute
   '/admin/rooms': typeof AdminRoomsRoute
@@ -308,6 +315,7 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/port-reservations': typeof AdminPortReservationsRoute
   '/admin/port-tarifs': typeof AdminPortTarifsRoute
   '/admin/reservations': typeof AdminReservationsRoute
   '/admin/rooms': typeof AdminRoomsRoute
@@ -350,6 +358,7 @@ export interface FileRoutesById {
   '/admin/login': typeof AdminLoginRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/port-reservations': typeof AdminPortReservationsRoute
   '/admin/port-tarifs': typeof AdminPortTarifsRoute
   '/admin/reservations': typeof AdminReservationsRoute
   '/admin/rooms': typeof AdminRoomsRoute
@@ -393,6 +402,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/messages'
     | '/admin/payments'
+    | '/admin/port-reservations'
     | '/admin/port-tarifs'
     | '/admin/reservations'
     | '/admin/rooms'
@@ -433,6 +443,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/messages'
     | '/admin/payments'
+    | '/admin/port-reservations'
     | '/admin/port-tarifs'
     | '/admin/reservations'
     | '/admin/rooms'
@@ -474,6 +485,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/messages'
     | '/admin/payments'
+    | '/admin/port-reservations'
     | '/admin/port-tarifs'
     | '/admin/reservations'
     | '/admin/rooms'
@@ -655,6 +667,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPaymentsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/port-reservations': {
+      id: '/admin/port-reservations'
+      path: '/port-reservations'
+      fullPath: '/admin/port-reservations'
+      preLoaderRoute: typeof AdminPortReservationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/port-tarifs': {
       id: '/admin/port-tarifs'
       path: '/port-tarifs'
@@ -800,6 +819,7 @@ interface AdminRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
+  AdminPortReservationsRoute: typeof AdminPortReservationsRoute
   AdminPortTarifsRoute: typeof AdminPortTarifsRoute
   AdminReservationsRoute: typeof AdminReservationsRoute
   AdminRoomsRoute: typeof AdminRoomsRoute
@@ -816,6 +836,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminMessagesRoute: AdminMessagesRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
+  AdminPortReservationsRoute: AdminPortReservationsRoute,
   AdminPortTarifsRoute: AdminPortTarifsRoute,
   AdminReservationsRoute: AdminReservationsRoute,
   AdminRoomsRoute: AdminRoomsRoute,

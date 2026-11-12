@@ -22,7 +22,7 @@ export type AdminProfile = AdminUser & {
   active: boolean;
 };
 
-const CAPITAINERIE_PATH = "/admin/port-tarifs";
+const CAPITAINERIE_PATHS = ["/admin/port-reservations", "/admin/port-tarifs"];
 
 function isAdminAppRole(role: ProfileRole): role is AdminRole {
   return role === "admin" || role === "owner" || role === "capitainerie";
@@ -66,7 +66,9 @@ export function canAccessAdmin(role: AdminRole, pathname = "/admin") {
   if (pathname === "/admin/login") return true;
   if (role === "admin" || role === "owner") return true;
   if (role === "capitainerie") {
-    return pathname === CAPITAINERIE_PATH || pathname.startsWith(`${CAPITAINERIE_PATH}/`);
+    return CAPITAINERIE_PATHS.some(
+      (path) => pathname === path || pathname.startsWith(`${path}/`),
+    );
   }
   return false;
 }
@@ -83,7 +85,7 @@ export async function requireAdmin(pathname = "/admin") {
 }
 
 export function getDefaultAdminPath(role?: AdminRole) {
-  return role === "capitainerie" ? CAPITAINERIE_PATH : "/admin";
+  return role === "capitainerie" ? "/admin/port-reservations" : "/admin";
 }
 
 function mapAdminProfile(profile: UserProfile): AdminProfile {

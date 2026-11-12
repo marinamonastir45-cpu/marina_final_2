@@ -68,6 +68,7 @@ const navItems = [
   { to: "/admin/statistics", label: { fr: "Statistiques", en: "Statistics" }, icon: TrendingUp },
   { to: "/admin/direction", label: { fr: "Direction", en: "Management" }, icon: Crown },
   { to: "/admin/port-tarifs", label: { fr: "Tarifs Port", en: "Marina rates" }, icon: Anchor },
+  { to: "/admin/port-reservations", label: { fr: "Réservations Port", en: "Port bookings" }, icon: Anchor },
 ] as const;
 
 export function AdminLayout({
