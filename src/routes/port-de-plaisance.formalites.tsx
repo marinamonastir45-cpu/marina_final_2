@@ -52,15 +52,6 @@ const ARRIVAL_DOCS = [
     fr: "Police d'assurance du bateau couvrant la responsabilité civile",
     en: "Boat insurance policy covering third-party liability",
   },
-  {
-    fr: "Clearance de sortie du dernier port étranger (pour les bateaux en provenance de l'étranger)",
-    en: "Port clearance from the last foreign port (for boats arriving from abroad)",
-  },
-  {
-    fr: "Carnet de santé ou déclaration sanitaire si requis",
-    en: "Health record or health declaration if required",
-  },
-  { fr: "Manifeste de bord (douanes)", en: "Ship's manifest (customs)" },
 ];
 
 const DEPARTURE_DOCS = [
@@ -69,12 +60,8 @@ const DEPARTURE_DOCS = [
     en: "Full payment of harbour dues (stay, services, extras)",
   },
   {
-    fr: "Restitution de la clé d'accès aux équipements",
-    en: "Return of the facilities access key",
-  },
-  {
-    fr: "Clearance de sortie délivré par la capitainerie",
-    en: "Port clearance issued by the harbour office",
+    fr: "Avis d'appareillage à la garde maritime",
+    en: "Departure notice to the maritime guard",
   },
   {
     fr: "Notification préalable au minimum 2 h avant l'appareillage",
@@ -288,8 +275,8 @@ function FormalitesPage() {
               {[
                 {
                   rule: t(
-                    "Vitesse maximale dans le port : 3 nœuds",
-                    "Maximum speed in the harbour: 3 knots",
+                    "5 nœuds vitesse maximale",
+                    "Maximum speed in the harbour: 5 knots",
                   ),
                 },
                 {
