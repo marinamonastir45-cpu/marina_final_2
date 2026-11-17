@@ -109,7 +109,7 @@ export type CreateClientReservationInput = {
 };
 
 /** Creates a reservation owned by the signed-in client (guest_id = auth.uid()),
- * always starting in "pending" status awaiting admin confirmation. Requires an
+ * starting in "confirmed" status per hotel direct-booking policy. Requires an
  * authenticated client session — never falls back to mock or anonymous booking. */
 export async function createClientReservation(input: CreateClientReservationInput) {
   const room = await getRoomType(input.roomId);
@@ -217,7 +217,7 @@ export async function createClientReservation(input: CreateClientReservationInpu
     adults: input.adults,
     children: input.children,
     nights: nights,
-    status: "pending",
+    status: "confirmed",
     price_per_night: room.pricePerNight,
     total: total,
     deposit: deposit,
@@ -247,7 +247,7 @@ export async function createClientReservation(input: CreateClientReservationInpu
       checkOut: input.checkOut,
       adults: input.adults,
       children: input.children,
-      status: "pending",
+      status: "confirmed",
       pricePerNight: room.pricePerNight,
       taxes: 0,
       total: total,

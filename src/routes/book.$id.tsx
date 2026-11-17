@@ -269,8 +269,8 @@ function BookPage() {
               </h2>
               <p className="text-sm leading-7 text-muted-foreground">
                 {t(
-                  "Aucun numéro de carte ni CVC n'est collecté ou stocké. Votre demande de réservation est envoyée à la réception avec le statut \"en attente\" et sera confirmée manuellement par l'équipe Marina Cap Monastir.",
-                  'No card number or CVC is collected or stored. Your booking request is sent to reception as "pending" and will be confirmed manually by the Marina Cap Monastir team.',
+                  "Aucun numéro de carte ni CVC n'est collecté ou stocké. Votre réservation est confirmée directement et enregistrée auprès de l'équipe Marina Cap Monastir.",
+                  "No card number or CVC is collected or stored. Your booking is confirmed directly and recorded with the Marina Cap Monastir team.",
                 )}
               </p>
             </section>
