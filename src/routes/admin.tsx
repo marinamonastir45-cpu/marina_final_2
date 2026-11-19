@@ -45,7 +45,7 @@ import {
 import { listAutomationAlerts } from "@/lib/services/alertService";
 import { listInvoices } from "@/lib/services/invoiceService";
 import { listPayments } from "@/lib/services/paymentService";
-import { listReservations } from "@/lib/services/reservationService";
+import { listReservations, autoUpdateReservationStatuses } from "@/lib/services/reservationService";
 import { listRoomTypes } from "@/lib/services/roomService";
 import { requireAdmin } from "@/lib/auth/adminAuth";
 import { isSupabaseConfigured } from "@/lib/supabase/isSupabaseConfigured";
@@ -178,6 +178,11 @@ async function loadDashboardData(locationPathname = "/admin"): Promise<Dashboard
       errors: { ...emptyDashboardErrors },
     };
   }
+
+  // Auto check-in / check-out basé sur les dates — système automatique
+  await autoUpdateReservationStatuses().catch((err) => {
+    if (import.meta.env.DEV) console.warn("[autoUpdate] skipped:", err);
+  });
 
   const [rooms, reservations, payments, invoices, guests, alerts, stats] = await Promise.all([
     safeDashboardQuery("rooms", [] as Room[], listRoomTypes),

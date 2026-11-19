@@ -342,6 +342,42 @@ function upsertReservationInMock(reservation: Reservation) {
   else reservations.unshift(reservation);
 }
 
+export async function autoUpdateReservationStatuses() {
+  const supabase = await getSupabaseOrNull();
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (supabase) {
+    try {
+      // Auto check-in: confirmed + date_arrivée = aujourd'hui → checked_in
+      await supabase
+        .from("reservations")
+        .update({ status: "checked_in" })
+        .eq("status", "confirmed")
+        .eq("check_in", today);
+
+      // Auto check-out: checked_in + date_départ <= aujourd'hui → checked_out
+      await supabase
+        .from("reservations")
+        .update({ status: "checked_out" })
+        .eq("status", "checked_in")
+        .lte("check_out", today);
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.warn("[autoUpdateReservationStatuses] failed:", error);
+      }
+    }
+  } else {
+    // Fallback mock
+    for (const reservation of reservations) {
+      if (reservation.status === "confirmed" && reservation.checkIn === today) {
+        reservation.status = "checked_in";
+      } else if (reservation.status === "checked_in" && reservation.checkOut <= today) {
+        reservation.status = "checked_out";
+      }
+    }
+  }
+}
+
 function normalizeRpcResult(data: ReservationRpcResult | ReservationRpcResult[] | null) {
   const result = Array.isArray(data) ? data[0] : data;
   if (!result?.reservation_number) {

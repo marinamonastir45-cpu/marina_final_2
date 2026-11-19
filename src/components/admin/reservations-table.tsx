@@ -360,64 +360,10 @@ export function ReservationsTable({ compact = false }: Props) {
                       </button>
                       {openActionId === reservation.id && (
                         <div className="absolute right-0 top-10 z-20 grid w-56 gap-1 rounded-xl border border-border bg-card p-2 shadow-[var(--shadow-lift)]">
-                          {reservation.status === "pending" && (
-                            <ActionMenuButton
-                              label={t("Rejeter", "Reject")}
-                              danger
-                              onClick={() => setReservation(reservation.id, "cancelled")}
-                            />
-                          )}
-                          <ActionMenuButton
-                            label={t("Confirmer", "Confirm")}
-                            onClick={() => setReservation(reservation.id, "confirmed")}
-                          />
-                          <ActionMenuButton
-                            label={t("Check-in", "Check-in")}
-                            onClick={() => setReservation(reservation.id, "checked_in")}
-                          />
-                          <ActionMenuButton
-                            label={t("Check-out", "Check-out")}
-                            onClick={() => setReservation(reservation.id, "checked_out")}
-                          />
                           <ActionMenuButton
                             label={t("Annuler", "Cancel")}
                             danger
                             onClick={() => setReservation(reservation.id, "cancelled")}
-                          />
-                          <div className="mt-1 border-t border-border pt-1">
-                            <label className="block px-2 pb-1 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
-                              {t("Assigner un appartement", "Assign an apartment")}
-                            </label>
-                            <select
-                              defaultValue=""
-                              disabled={
-                                assigningId === reservation.id ||
-                                unitsLoadingRoomId === reservation.roomId
-                              }
-                              onChange={(event) =>
-                                void assignUnit(reservation.id, event.target.value)
-                              }
-                              className="admin-input h-9 w-full disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                              <option value="">
-                                {unitsLoadingRoomId === reservation.roomId
-                                  ? t("Chargement...", "Loading...")
-                                  : t("Choisir une unité", "Choose a unit")}
-                              </option>
-                              {(unitsByRoom[reservation.roomId] ?? []).map((unit) => (
-                                <option key={unit.id} value={unit.id}>
-                                  {t("Unité", "Unit")} {unit.unitNumber}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <ActionMenuButton
-                            label={t("Acompte", "Deposit")}
-                            onClick={() => setPayment(reservation.id, "deposit_paid")}
-                          />
-                          <ActionMenuButton
-                            label={t("Marquer payé", "Mark as paid")}
-                            onClick={() => setPayment(reservation.id, "paid")}
                           />
                           <ActionMenuButton
                             label={t("Imprimer fiche / Voucher", "Print voucher")}
@@ -428,11 +374,6 @@ export function ReservationsTable({ compact = false }: Props) {
                             }}
                           />
                           <ActionMenuButton
-                            label={t("Générer facture", "Generate invoice")}
-                            icon={<FileText className="size-3.5" />}
-                            onClick={() => void createInvoice(reservation.id)}
-                          />
-                          <ActionMenuButton
                             label={
                               openingMessageId === reservation.id
                                 ? t("Ouverture...", "Opening...")
@@ -441,9 +382,6 @@ export function ReservationsTable({ compact = false }: Props) {
                             icon={<MessageCircle className="size-3.5" />}
                             onClick={() => void messageClient(reservation)}
                           />
-                          <Link to="/admin/invoices" className="admin-action justify-start">
-                            {t("Voir facture", "View invoice")}
-                          </Link>
                         </div>
                       )}
                     </div>
