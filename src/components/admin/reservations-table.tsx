@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { FileText, MessageCircle, MoreHorizontal, Search } from "lucide-react";
+import { FileText, MessageCircle, MoreHorizontal, Printer, Search } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ReservationPrintModal } from "./ReservationPrintModal";
 import {
   reservations,
   rooms,
@@ -53,6 +54,7 @@ export function ReservationsTable({ compact = false }: Props) {
   const [assigningId, setAssigningId] = useState<string | null>(null);
   const [unitsByRoom, setUnitsByRoom] = useState<Record<string, RoomUnitOption[]>>({});
   const [unitsLoadingRoomId, setUnitsLoadingRoomId] = useState<string | null>(null);
+  const [printReservation, setPrintReservation] = useState<(typeof reservations)[number] | null>(null);
 
   const needle = guestSearch.trim().toLowerCase();
   const rows = reservations
@@ -397,6 +399,14 @@ export function ReservationsTable({ compact = false }: Props) {
                             onClick={() => setPayment(reservation.id, "paid")}
                           />
                           <ActionMenuButton
+                            label={t("Imprimer fiche / Voucher", "Print voucher")}
+                            icon={<Printer className="size-3.5 text-primary" />}
+                            onClick={() => {
+                              setOpenActionId(null);
+                              setPrintReservation(reservation);
+                            }}
+                          />
+                          <ActionMenuButton
                             label={t("Générer facture", "Generate invoice")}
                             icon={<FileText className="size-3.5" />}
                             onClick={() => void createInvoice(reservation.id)}
@@ -441,6 +451,12 @@ export function ReservationsTable({ compact = false }: Props) {
           </tbody>
         </table>
       </div>
+
+      <ReservationPrintModal
+        reservation={printReservation}
+        open={Boolean(printReservation)}
+        onClose={() => setPrintReservation(null)}
+      />
     </div>
   );
 }

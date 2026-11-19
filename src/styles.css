@@ -532,13 +532,22 @@
     aside,
     header,
     nav,
-    button {
+    button,
+    .no-print {
       display: none !important;
     }
 
     .print-invoice {
       border: 0 !important;
       box-shadow: none !important;
+    }
+
+    #printable-voucher {
+      border: 0 !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      max-width: 100% !important;
     }
   }
 }
