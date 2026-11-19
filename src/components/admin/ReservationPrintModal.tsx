@@ -368,6 +368,14 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
                 <td colspan="3" class="text-right">SOLDE RESTANT À RÉGLER À L'ARRIVÉE :</td>
                 <td class="text-right">${remaining} DT</td>
               </tr>
+              <tr style="background: #fffbeb; font-size: 11px;">
+                <td colspan="3" style="color: #92400e; font-style: italic; border: 1px solid #fde68a;">
+                  * Taxe de séjour : à régler directement sur place à l'hôtel
+                </td>
+                <td class="text-right" style="color: #92400e; font-weight: 700; border: 1px solid #fde68a;">
+                  À l'arrivée
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -383,19 +391,9 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
         <div class="notes-box">
           <div class="notes-title">Conditions d'accueil :</div>
           • Réception ouverte 24h/24. Présentation obligatoire d'une pièce d'identité valide lors du check-in.<br>
+          • Taxe de séjour à régler sur place à l'hôtel lors de votre arrivée.<br>
           • Les clés de l'appartement sont remises contre règlement du solde de séjour.<br>
           • Pour tout retard ou question, veuillez contacter la réception au (+216) 73 468 300.
-        </div>
-
-        <div class="signatures-grid">
-          <div class="signature-box">
-            <span class="signature-title">Signature du Client</span>
-            <span class="signature-hint">Mention "Lu et approuvé"</span>
-          </div>
-          <div class="signature-box">
-            <span class="signature-title">Cachet & Signature Réception</span>
-            <span class="signature-hint">Marina Cap Monastir</span>
-          </div>
         </div>
       </body>
       </html>
@@ -601,6 +599,14 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
                         {formatCurrency(remaining)}
                       </td>
                     </tr>
+                    <tr className="border-t border-amber-200 bg-amber-50/80 text-[11px]">
+                      <td colSpan={3} className="px-4 py-2 text-right italic text-amber-800">
+                        * Taxe de séjour : à régler directement sur place à l'hôtel
+                      </td>
+                      <td className="px-4 py-2 text-right font-bold text-amber-900">
+                        À l'arrivée
+                      </td>
+                    </tr>
                   </tfoot>
                 </table>
               </div>
@@ -618,20 +624,9 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
             <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50/70 p-3.5 text-[11px] leading-5 text-slate-600">
               <p className="font-bold text-slate-800">Conditions d'accueil :</p>
               <p>• Réception ouverte 24h/24. Présentation obligatoire d'une pièce d'identité en cours de validité.</p>
+              <p>• Taxe de séjour à régler sur place à l'hôtel lors de votre arrivée.</p>
               <p>• Les clés de l'appartement sont remises contre règlement du solde de séjour.</p>
               <p>• Pour tout retard ou question, veuillez contacter la réception au (+216) 73 468 300.</p>
-            </div>
-
-            {/* Signatures */}
-            <div className="mt-6 grid grid-cols-2 gap-8 border-t border-slate-200 pt-5 text-center text-xs">
-              <div className="flex min-h-[85px] flex-col justify-between rounded-lg border border-dashed border-slate-300 p-2.5">
-                <span className="font-bold text-slate-700">Signature du Client</span>
-                <span className="text-[10px] text-slate-400 italic">(Mention "Lu et approuvé")</span>
-              </div>
-              <div className="flex min-h-[85px] flex-col justify-between rounded-lg border border-dashed border-slate-300 p-2.5">
-                <span className="font-bold text-slate-700">Cachet & Signature Réception</span>
-                <span className="text-[10px] text-slate-400">Marina Cap Monastir</span>
-              </div>
             </div>
           </div>
         </div>
