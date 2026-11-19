@@ -178,7 +178,7 @@ export function AdminLayout({
         <div className="marina-pattern absolute inset-0 opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-b from-primary via-ocean to-[#041d2b]" />
         <div className="relative flex h-full flex-col">
-          <BrandBlock collapsed={sidebarCollapsed} />
+          <BrandBlock collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
           <nav className="flex-1 space-y-1 overflow-y-auto p-3">
             {visibleNavItems.map((item) => (
               <AdminNavLink
@@ -241,27 +241,6 @@ export function AdminLayout({
                   aria-label={t("Ouvrir le menu admin", "Open the admin menu")}
                 >
                   <Menu className="size-5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={toggleSidebar}
-                  className="hidden size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground shadow-sm transition hover:border-primary/30 hover:bg-secondary hover:text-primary lg:inline-flex"
-                  title={
-                    sidebarCollapsed
-                      ? t("Agrandir le menu latéral", "Expand sidebar")
-                      : t("Réduire le menu latéral", "Collapse sidebar")
-                  }
-                  aria-label={
-                    sidebarCollapsed
-                      ? t("Agrandir le menu latéral", "Expand sidebar")
-                      : t("Réduire le menu latéral", "Collapse sidebar")
-                  }
-                >
-                  {sidebarCollapsed ? (
-                    <ChevronRight className="size-5" />
-                  ) : (
-                    <ChevronLeft className="size-5" />
-                  )}
                 </button>
                 <div>
                   <div className="section-kicker">
@@ -496,35 +475,70 @@ export function AdminLayout({
 function BrandBlock({
   compact = false,
   collapsed = false,
+  onToggle,
 }: {
   compact?: boolean;
   collapsed?: boolean;
+  onToggle?: () => void;
 }) {
   const { t } = useI18n();
   return (
-    <Link
-      to="/"
-      title="Marina Cap Monastir"
+    <div
       className={cn(
-        "flex items-center gap-3 border-b border-white/10 p-5 transition hover:opacity-90",
-        compact && "border-b-0",
-        collapsed && "justify-center p-3.5",
+        "flex items-center border-b border-white/10 transition",
+        compact ? "border-b-0 p-4" : collapsed ? "flex-col gap-2.5 p-3" : "justify-between p-4",
       )}
     >
-      <img
-        src="/icons/icon-512.png?v=2"
-        alt="Marina Cap Monastir"
-        className="size-10 rounded-lg object-cover shadow-lg"
-      />
-      {!collapsed && (
-        <div className="min-w-0">
-          <div className="truncate font-black tracking-tight text-white">Marina Cap Monastir</div>
-          <div className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
-            {t("Extranet hôtelier", "Hotel extranet")}
+      <Link
+        to="/"
+        title="Marina Cap Monastir"
+        className={cn(
+          "flex items-center gap-3 min-w-0 transition hover:opacity-90",
+          collapsed && "justify-center",
+        )}
+      >
+        <img
+          src="/icons/icon-512.png?v=2"
+          alt="Marina Cap Monastir"
+          className={cn(
+            "rounded-lg object-cover shadow-lg shrink-0",
+            collapsed ? "size-10" : "size-11",
+          )}
+        />
+        {!collapsed && (
+          <div className="min-w-0">
+            <div className="truncate font-black tracking-tight text-white text-sm">
+              Marina Cap Monastir
+            </div>
+            <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-accent">
+              {t("Extranet hôtelier", "Hotel extranet")}
+            </div>
           </div>
-        </div>
+        )}
+      </Link>
+      {onToggle && !compact && (
+        <button
+          type="button"
+          onClick={onToggle}
+          className={cn(
+            "inline-flex shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white/80 shadow-sm transition hover:bg-white/20 hover:text-white",
+            collapsed ? "size-7" : "size-8",
+          )}
+          title={
+            collapsed
+              ? t("Agrandir le menu latéral", "Expand sidebar")
+              : t("Réduire le menu latéral", "Collapse sidebar")
+          }
+          aria-label={
+            collapsed
+              ? t("Agrandir le menu latéral", "Expand sidebar")
+              : t("Réduire le menu latéral", "Collapse sidebar")
+          }
+        >
+          {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
+        </button>
       )}
-    </Link>
+    </div>
   );
 }
 

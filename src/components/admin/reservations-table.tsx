@@ -258,14 +258,13 @@ export function ReservationsTable({ compact = false }: Props) {
 
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-secondary/70 text-xs uppercase tracking-[0.12em] text-muted-foreground">
+          <thead className="bg-secondary/90 text-xs font-black uppercase tracking-wider text-primary">
             <tr>
-              <th className="px-4 py-3">{t("Réservation", "Booking")}</th>
-              <th className="px-4 py-3">{t("Client & Contact", "Guest & Contact")}</th>
-              <th className="px-4 py-3">{t("Logement & Séjour", "Room & Stay")}</th>
-              <th className="px-4 py-3">{t("Statut", "Status")}</th>
-              <th className="px-4 py-3">{t("Règlement & Solde", "Billing & Due")}</th>
-              <th className="px-4 py-3 text-right">{t("Actions", "Actions")}</th>
+              <th className="px-5 py-4 min-w-[170px]">{t("Réservation & Statut", "Booking & Status")}</th>
+              <th className="px-5 py-4 min-w-[240px]">{t("Client & Contact", "Guest & Contact")}</th>
+              <th className="px-5 py-4 min-w-[280px]">{t("Logement & Séjour", "Room & Stay")}</th>
+              <th className="px-5 py-4 min-w-[160px]">{t("Règlement & Solde", "Billing & Due")}</th>
+              <th className="px-5 py-4 text-right min-w-[110px]">{t("Actions", "Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -278,61 +277,82 @@ export function ReservationsTable({ compact = false }: Props) {
                   key={`${reservation.id}-${version}`}
                   className="border-t border-border align-top transition-colors hover:bg-muted/40"
                 >
-                  <td className="px-4 py-3.5">
-                    <div className="font-bold text-primary">{reservation.reservationNumber}</div>
-                    <div className="mt-1">
-                      <StatusBadge kind="source" value={reservation.source} />
+                  <td className="px-5 py-4">
+                    <div className="text-base font-extrabold text-primary tracking-tight">
+                      {reservation.reservationNumber}
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      <StatusBadge kind="reservation" value={reservation.status} />
+                      {reservation.source !== "direct" && (
+                        <StatusBadge kind="source" value={reservation.source} />
+                      )}
                     </div>
                   </td>
-                  <td className="px-4 py-3.5">
-                    <div className="font-semibold text-foreground">{reservation.guest.fullName}</div>
-                    <div className="text-xs text-muted-foreground">{reservation.guest.phone || "—"}</div>
-                    <div className="text-xs text-muted-foreground/80 truncate max-w-[200px]" title={reservation.guest.email}>
+                  <td className="px-5 py-4">
+                    <div className="text-base font-extrabold text-foreground leading-snug">
+                      {reservation.guest.fullName}
+                    </div>
+                    <div className="mt-1 text-sm font-bold text-primary">
+                      {reservation.guest.phone || "—"}
+                    </div>
+                    <div
+                      className="mt-0.5 text-[13px] font-semibold text-muted-foreground truncate max-w-[220px]"
+                      title={reservation.guest.email}
+                    >
                       {reservation.guest.email}
                     </div>
                     {(reservation.guest.country || reservation.guest.identityNumber) && (
-                      <div className="mt-0.5 text-[11px] text-muted-foreground/60">
-                        {[reservation.guest.country, reservation.guest.identityNumber].filter(Boolean).join(" · ")}
+                      <div className="mt-1 text-xs font-semibold text-slate-500">
+                        {[reservation.guest.country, reservation.guest.identityNumber]
+                          .filter(Boolean)
+                          .join(" · ")}
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-3.5">
-                    <div className="font-medium text-foreground">
+                  <td className="px-5 py-4">
+                    <div className="text-base font-extrabold text-foreground leading-snug">
                       {room ? localizeRoomName(room, locale) : reservation.roomId}
                     </div>
-                    <div className="mt-0.5 text-xs text-muted-foreground">
+                    <div className="mt-1 text-sm font-bold text-slate-800 dark:text-slate-100">
                       {reservation.checkIn} {t("au", "to")} {reservation.checkOut}
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      {reservation.nights} {reservation.nights > 1 ? t("nuits", "nights") : t("nuit", "night")} · {reservation.adults} {t("ad.", "ad.")}
-                      {reservation.children > 0 ? ` · ${reservation.children} ${t("enf.", "ch.")}` : ""}
+                    <div className="mt-1 text-sm font-extrabold text-slate-900 dark:text-slate-100">
+                      {reservation.nights}{" "}
+                      {reservation.nights > 1 ? t("nuits", "nights") : t("nuit", "night")} ·{" "}
+                      {reservation.adults} {t("ad.", "ad.")}
+                      {reservation.children > 0
+                        ? ` · ${reservation.children} ${t("enf.", "ch.")}`
+                        : ""}
                     </div>
                     {reservation.specialRequests && (
-                      <div className="mt-0.5 max-w-[220px] truncate text-[11px] italic text-amber-700" title={reservation.specialRequests}>
-                        💬 {reservation.specialRequests}
+                      <div
+                        className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-900 shadow-xs"
+                        title={reservation.specialRequests}
+                      >
+                        <span className="text-sm">💬</span>
+                        <span className="font-extrabold">{reservation.specialRequests}</span>
                       </div>
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3.5">
-                    <StatusBadge kind="reservation" value={reservation.status} />
-                  </td>
-                  <td className="px-4 py-3.5">
-                    <div className="font-bold text-foreground">{formatCurrency(reservation.total)}</div>
-                    <div className="mt-1">
+                  <td className="px-5 py-4">
+                    <div className="text-base font-black text-foreground">
+                      {formatCurrency(reservation.total)}
+                    </div>
+                    <div className="mt-1.5">
                       <StatusBadge kind="payment" value={reservation.paymentStatus} />
                     </div>
                     {remaining > 0 && reservation.paymentStatus !== "paid" && (
-                      <div className="mt-0.5 text-xs font-semibold text-amber-700">
+                      <div className="mt-1.5 inline-flex items-center rounded-md border border-amber-300 bg-amber-50 px-2 py-0.5 text-xs font-extrabold text-amber-900 shadow-xs">
                         {t("Reste :", "Due :")} {formatCurrency(remaining)}
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-3.5 text-right">
+                  <td className="px-5 py-4 text-right">
                     <div className="relative inline-block text-left">
                       <button
                         type="button"
                         onClick={() => toggleActionMenu(reservation)}
-                        className="admin-action h-9 px-3"
+                        className="admin-action h-10 px-4 font-bold text-sm shadow-sm"
                         aria-expanded={openActionId === reservation.id}
                       >
                         <MoreHorizontal className="size-4" />
@@ -433,7 +453,7 @@ export function ReservationsTable({ compact = false }: Props) {
             })}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-12">
+                <td colSpan={5} className="px-4 py-12">
                   <div className="empty-state mx-auto max-w-xl py-10">
                     <Search className="mx-auto mb-3 size-8 text-accent" />
                     <div className="text-lg font-black text-primary">

@@ -278,10 +278,10 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
         <div class="header">
           <div>
             <div class="brand-title">MARINA CAP MONASTIR</div>
-            <div class="brand-subtitle">Résidence Hôtelière & Port de Plaisance</div>
+            <div class="brand-subtitle">Appart Hôtel & Port de Plaisance</div>
             <div class="brand-contact">
               Port de Plaisance, BP N°60 — 5000 Monastir, Tunisie<br>
-              Tél : (+216) 73 468 300 / (+216) 73 462 305<br>
+              Tél : (+216) 97 977 508 (WhatsApp) / (+216) 73 462 305<br>
               Email : reservations@marinamonastir.tn · Web : www.marinamonastir.tn
             </div>
           </div>
@@ -325,11 +325,11 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
             </div>
             <div class="info-row">
               <span class="info-label">Date d'arrivée :</span>
-              <span class="info-value">${reservation.checkIn} (à partir de 14h)</span>
+              <span class="info-value">${reservation.checkIn}</span>
             </div>
             <div class="info-row">
               <span class="info-label">Date de départ :</span>
-              <span class="info-value">${reservation.checkOut} (jusqu'à 11h)</span>
+              <span class="info-value">${reservation.checkOut}</span>
             </div>
             <div class="info-row">
               <span class="info-label">Durée du séjour :</span>
@@ -368,14 +368,6 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
                 <td colspan="3" class="text-right">SOLDE RESTANT À RÉGLER À L'ARRIVÉE :</td>
                 <td class="text-right">${remaining} DT</td>
               </tr>
-              <tr style="background: #fffbeb; font-size: 11px;">
-                <td colspan="3" style="color: #92400e; font-style: italic; border: 1px solid #fde68a;">
-                  * Taxe de séjour : à régler directement sur place à l'hôtel
-                </td>
-                <td class="text-right" style="color: #92400e; font-weight: 700; border: 1px solid #fde68a;">
-                  À l'arrivée
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -392,8 +384,7 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
           <div class="notes-title">Conditions d'accueil :</div>
           • Réception ouverte 24h/24. Présentation obligatoire d'une pièce d'identité valide lors du check-in.<br>
           • Taxe de séjour à régler sur place à l'hôtel lors de votre arrivée.<br>
-          • Les clés de l'appartement sont remises contre règlement du solde de séjour.<br>
-          • Pour tout retard ou question, veuillez contacter la réception au (+216) 73 468 300.
+          • Les clés de l'appartement sont remises contre règlement du solde de séjour.
         </div>
       </body>
       </html>
@@ -457,11 +448,11 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
                   </span>
                 </div>
                 <p className="mt-1 text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Résidence Hôtelière & Port de Plaisance
+                  Appart Hôtel & Port de Plaisance
                 </p>
                 <div className="mt-2 text-xs leading-5 text-slate-600">
                   <p>Port de Plaisance, BP N°60 — 5000 Monastir, Tunisie</p>
-                  <p>Tél : (+216) 73 468 300 / (+216) 73 462 305</p>
+                  <p>Tél : (+216) 97 977 508 (WhatsApp) / (+216) 73 462 305</p>
                   <p>Email : reservations@marinamonastir.tn</p>
                 </div>
               </div>
@@ -528,15 +519,11 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Date d'arrivée :</span>
-                    <span className="font-bold text-slate-900">
-                      {reservation.checkIn} <span className="text-[10px] font-normal text-slate-500">(14h)</span>
-                    </span>
+                    <span className="font-bold text-slate-900">{reservation.checkIn}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Date de départ :</span>
-                    <span className="font-bold text-slate-900">
-                      {reservation.checkOut} <span className="text-[10px] font-normal text-slate-500">(11h)</span>
-                    </span>
+                    <span className="font-bold text-slate-900">{reservation.checkOut}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Durée du séjour :</span>
@@ -599,14 +586,6 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
                         {formatCurrency(remaining)}
                       </td>
                     </tr>
-                    <tr className="border-t border-amber-200 bg-amber-50/80 text-[11px]">
-                      <td colSpan={3} className="px-4 py-2 text-right italic text-amber-800">
-                        * Taxe de séjour : à régler directement sur place à l'hôtel
-                      </td>
-                      <td className="px-4 py-2 text-right font-bold text-amber-900">
-                        À l'arrivée
-                      </td>
-                    </tr>
                   </tfoot>
                 </table>
               </div>
@@ -626,7 +605,6 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
               <p>• Réception ouverte 24h/24. Présentation obligatoire d'une pièce d'identité en cours de validité.</p>
               <p>• Taxe de séjour à régler sur place à l'hôtel lors de votre arrivée.</p>
               <p>• Les clés de l'appartement sont remises contre règlement du solde de séjour.</p>
-              <p>• Pour tout retard ou question, veuillez contacter la réception au (+216) 73 468 300.</p>
             </div>
           </div>
         </div>
