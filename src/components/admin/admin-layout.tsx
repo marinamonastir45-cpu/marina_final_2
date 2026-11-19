@@ -4,6 +4,8 @@ import {
   BedDouble,
   CalendarDays,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   CreditCard,
   Crown,
   FileText,
@@ -148,44 +150,86 @@ export function AdminLayout({
   };
   const notificationCount = unreadMessages;
 
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("marina_admin_sidebar_collapsed") === "true";
+    }
+    return false;
+  });
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("marina_admin_sidebar_collapsed", String(next));
+      } catch {}
+      return next;
+    });
+  };
+
   return (
     <div className="admin-shell min-h-screen">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 overflow-hidden border-r border-white/10 bg-ocean text-white shadow-2xl lg:block">
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-30 hidden overflow-hidden border-r border-white/10 bg-ocean text-white shadow-2xl transition-[width] duration-300 ease-in-out lg:block",
+          sidebarCollapsed ? "w-20" : "w-72",
+        )}
+      >
         <div className="marina-pattern absolute inset-0 opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-b from-primary via-ocean to-[#041d2b]" />
         <div className="relative flex h-full flex-col">
-          <BrandBlock />
+          <BrandBlock collapsed={sidebarCollapsed} />
           <nav className="flex-1 space-y-1 overflow-y-auto p-3">
             {visibleNavItems.map((item) => (
-              <AdminNavLink key={item.to} item={item} pathname={pathname} />
+              <AdminNavLink
+                key={item.to}
+                item={item}
+                pathname={pathname}
+                collapsed={sidebarCollapsed}
+              />
             ))}
             <div className="pt-2">
               <Link
                 to="/"
-                className="flex items-center gap-3 rounded-lg border border-accent/40 bg-accent/20 px-3 py-2.5 text-sm font-black text-accent-light transition hover:bg-accent/35 hover:text-white"
+                title={t("Retour au site Web", "Back to the website")}
+                className={cn(
+                  "flex items-center gap-3 rounded-lg border border-accent/40 bg-accent/20 px-3 py-2.5 text-sm font-black text-accent-light transition hover:bg-accent/35 hover:text-white",
+                  sidebarCollapsed && "justify-center px-2",
+                )}
               >
-                <Globe className="size-4" />
-                {t("Retour au site Web", "Back to the website")}
+                <Globe className="size-4 shrink-0" />
+                {!sidebarCollapsed && (
+                  <span className="min-w-0 truncate">
+                    {t("Retour au site Web", "Back to the website")}
+                  </span>
+                )}
               </Link>
             </div>
           </nav>
-          <div className="border-t border-white/10 p-4">
-            <div className="rounded-xl border border-white/10 bg-white/8 p-4 text-xs leading-5 text-white/72 shadow-inner">
-              <div className="font-semibold text-white">
-                {t("Session sécurisée", "Secure session")}
+          {!sidebarCollapsed && (
+            <div className="border-t border-white/10 p-4">
+              <div className="rounded-xl border border-white/10 bg-white/8 p-4 text-xs leading-5 text-white/72 shadow-inner">
+                <div className="font-semibold text-white">
+                  {t("Session sécurisée", "Secure session")}
+                </div>
+                <p className="mt-1">
+                  {t(
+                    "Supabase Auth, rôles admin et politiques RLS restent actifs.",
+                    "Supabase Auth, admin roles and RLS policies stay active.",
+                  )}
+                </p>
               </div>
-              <p className="mt-1">
-                {t(
-                  "Supabase Auth, rôles admin et politiques RLS restent actifs.",
-                  "Supabase Auth, admin roles and RLS policies stay active.",
-                )}
-              </p>
             </div>
-          </div>
+          )}
         </div>
       </aside>
 
-      <div className="lg:pl-72">
+      <div
+        className={cn(
+          "transition-[padding] duration-300 ease-in-out",
+          sidebarCollapsed ? "lg:pl-20" : "lg:pl-72",
+        )}
+      >
         <header className="sticky top-0 z-20 border-b border-border/80 bg-background/76 shadow-sm backdrop-blur-xl">
           <div className="flex min-h-20 flex-col gap-4 px-4 py-4 md:px-6 xl:flex-row xl:items-center xl:justify-between">
             <div className="min-w-0">
@@ -197,6 +241,27 @@ export function AdminLayout({
                   aria-label={t("Ouvrir le menu admin", "Open the admin menu")}
                 >
                   <Menu className="size-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleSidebar}
+                  className="hidden size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground shadow-sm transition hover:border-primary/30 hover:bg-secondary hover:text-primary lg:inline-flex"
+                  title={
+                    sidebarCollapsed
+                      ? t("Agrandir le menu latéral", "Expand sidebar")
+                      : t("Réduire le menu latéral", "Collapse sidebar")
+                  }
+                  aria-label={
+                    sidebarCollapsed
+                      ? t("Agrandir le menu latéral", "Expand sidebar")
+                      : t("Réduire le menu latéral", "Collapse sidebar")
+                  }
+                >
+                  {sidebarCollapsed ? (
+                    <ChevronRight className="size-5" />
+                  ) : (
+                    <ChevronLeft className="size-5" />
+                  )}
                 </button>
                 <div>
                   <div className="section-kicker">
@@ -428,41 +493,62 @@ export function AdminLayout({
   );
 }
 
-function BrandBlock({ compact = false }: { compact?: boolean }) {
+function BrandBlock({
+  compact = false,
+  collapsed = false,
+}: {
+  compact?: boolean;
+  collapsed?: boolean;
+}) {
   const { t } = useI18n();
   return (
     <Link
       to="/"
+      title="Marina Cap Monastir"
       className={cn(
         "flex items-center gap-3 border-b border-white/10 p-5 transition hover:opacity-90",
         compact && "border-b-0",
+        collapsed && "justify-center p-3.5",
       )}
     >
       <img
         src="/icons/icon-512.png?v=2"
         alt="Marina Cap Monastir"
-        className="size-12 rounded-lg object-cover shadow-lg"
+        className="size-10 rounded-lg object-cover shadow-lg"
       />
-      <div className="min-w-0">
-        <div className="truncate font-black tracking-tight text-white">Marina Cap Monastir</div>
-        <div className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
-          {t("Extranet hôtelier", "Hotel extranet")}
+      {!collapsed && (
+        <div className="min-w-0">
+          <div className="truncate font-black tracking-tight text-white">Marina Cap Monastir</div>
+          <div className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
+            {t("Extranet hôtelier", "Hotel extranet")}
+          </div>
         </div>
-      </div>
+      )}
     </Link>
   );
 }
 
-function AdminNavLink({ item, pathname }: { item: (typeof navItems)[number]; pathname: string }) {
+function AdminNavLink({
+  item,
+  pathname,
+  collapsed = false,
+}: {
+  item: (typeof navItems)[number];
+  pathname: string;
+  collapsed?: boolean;
+}) {
   const { pick } = useI18n();
   const Icon = item.icon;
   const active = item.to === "/admin" ? pathname === "/admin" : pathname.startsWith(item.to);
+  const label = pick(item.label);
 
   return (
     <Link
       to={item.to}
+      title={collapsed ? label : undefined}
       className={cn(
         "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold text-white/72 transition-all duration-200 hover:bg-white/10 hover:text-white",
+        collapsed && "justify-center px-2 py-2.5",
         active &&
           "bg-white text-primary shadow-lg shadow-black/10 hover:bg-white hover:text-primary",
       )}
@@ -475,7 +561,7 @@ function AdminNavLink({ item, pathname }: { item: (typeof navItems)[number]; pat
       >
         <Icon className="size-4" />
       </span>
-      <span className="min-w-0 truncate">{pick(item.label)}</span>
+      {!collapsed && <span className="min-w-0 truncate">{label}</span>}
     </Link>
   );
 }

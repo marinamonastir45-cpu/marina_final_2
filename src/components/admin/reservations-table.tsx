@@ -257,25 +257,15 @@ export function ReservationsTable({ compact = false }: Props) {
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1500px] text-left text-sm">
+        <table className="w-full text-left text-sm">
           <thead className="bg-secondary/70 text-xs uppercase tracking-[0.12em] text-muted-foreground">
             <tr>
               <th className="px-4 py-3">{t("Réservation", "Booking")}</th>
-              <th className="px-4 py-3">{t("Client", "Guest")}</th>
-              <th className="px-4 py-3">{t("Contact", "Contact")}</th>
-              <th className="px-4 py-3">{t("Pays / ID", "Country / ID")}</th>
-              <th className="px-4 py-3">{t("Chambre", "Room")}</th>
-              <th className="px-4 py-3">{t("Dates", "Dates")}</th>
-              <th className="px-4 py-3">{t("Nuits", "Nights")}</th>
-              <th className="px-4 py-3">{t("Voyageurs", "Guests")}</th>
-              <th className="px-4 py-3">{t("Source", "Source")}</th>
+              <th className="px-4 py-3">{t("Client & Contact", "Guest & Contact")}</th>
+              <th className="px-4 py-3">{t("Logement & Séjour", "Room & Stay")}</th>
               <th className="px-4 py-3">{t("Statut", "Status")}</th>
-              <th className="px-4 py-3">{t("Paiement", "Payment")}</th>
-              <th className="px-4 py-3">{t("Total", "Total")}</th>
-              <th className="px-4 py-3">{t("Payé", "Paid")}</th>
-              <th className="px-4 py-3">{t("Restant", "Remaining")}</th>
-              <th className="px-4 py-3">{t("Demandes", "Requests")}</th>
-              <th className="px-4 py-3">{t("Actions", "Actions")}</th>
+              <th className="px-4 py-3">{t("Règlement & Solde", "Billing & Due")}</th>
+              <th className="px-4 py-3 text-right">{t("Actions", "Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -286,48 +276,59 @@ export function ReservationsTable({ compact = false }: Props) {
               return (
                 <tr
                   key={`${reservation.id}-${version}`}
-                  className="border-t border-border align-top"
+                  className="border-t border-border align-top transition-colors hover:bg-muted/40"
                 >
-                  <td className="px-4 py-3 font-semibold text-primary">
-                    {reservation.reservationNumber}
+                  <td className="px-4 py-3.5">
+                    <div className="font-bold text-primary">{reservation.reservationNumber}</div>
+                    <div className="mt-1">
+                      <StatusBadge kind="source" value={reservation.source} />
+                    </div>
                   </td>
-                  <td className="px-4 py-3 font-medium">{reservation.guest.fullName}</td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    <div>{reservation.guest.phone}</div>
-                    <div className="text-xs">{reservation.guest.email}</div>
+                  <td className="px-4 py-3.5">
+                    <div className="font-semibold text-foreground">{reservation.guest.fullName}</div>
+                    <div className="text-xs text-muted-foreground">{reservation.guest.phone || "—"}</div>
+                    <div className="text-xs text-muted-foreground/80 truncate max-w-[200px]" title={reservation.guest.email}>
+                      {reservation.guest.email}
+                    </div>
+                    {(reservation.guest.country || reservation.guest.identityNumber) && (
+                      <div className="mt-0.5 text-[11px] text-muted-foreground/60">
+                        {[reservation.guest.country, reservation.guest.identityNumber].filter(Boolean).join(" · ")}
+                      </div>
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    <div>{reservation.guest.country}</div>
-                    <div className="text-xs">{reservation.guest.identityNumber}</div>
+                  <td className="px-4 py-3.5">
+                    <div className="font-medium text-foreground">
+                      {room ? localizeRoomName(room, locale) : reservation.roomId}
+                    </div>
+                    <div className="mt-0.5 text-xs text-muted-foreground">
+                      {reservation.checkIn} {t("au", "to")} {reservation.checkOut}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {reservation.nights} {reservation.nights > 1 ? t("nuits", "nights") : t("nuit", "night")} · {reservation.adults} {t("ad.", "ad.")}
+                      {reservation.children > 0 ? ` · ${reservation.children} ${t("enf.", "ch.")}` : ""}
+                    </div>
+                    {reservation.specialRequests && (
+                      <div className="mt-0.5 max-w-[220px] truncate text-[11px] italic text-amber-700" title={reservation.specialRequests}>
+                        💬 {reservation.specialRequests}
+                      </div>
+                    )}
                   </td>
-                  <td className="px-4 py-3">
-                    {room ? localizeRoomName(room, locale) : reservation.roomId}
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {reservation.checkIn} {t("au", "to")} {reservation.checkOut}
-                  </td>
-                  <td className="px-4 py-3">{reservation.nights}</td>
-                  <td className="px-4 py-3">
-                    {reservation.adults} {t("ad.", "ad.")} · {reservation.children}{" "}
-                    {t("enf.", "ch.")}
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge kind="source" value={reservation.source} />
-                  </td>
-                  <td className="px-4 py-3">
+                  <td className="whitespace-nowrap px-4 py-3.5">
                     <StatusBadge kind="reservation" value={reservation.status} />
                   </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge kind="payment" value={reservation.paymentStatus} />
+                  <td className="px-4 py-3.5">
+                    <div className="font-bold text-foreground">{formatCurrency(reservation.total)}</div>
+                    <div className="mt-1">
+                      <StatusBadge kind="payment" value={reservation.paymentStatus} />
+                    </div>
+                    {remaining > 0 && reservation.paymentStatus !== "paid" && (
+                      <div className="mt-0.5 text-xs font-semibold text-amber-700">
+                        {t("Reste :", "Due :")} {formatCurrency(remaining)}
+                      </div>
+                    )}
                   </td>
-                  <td className="px-4 py-3 font-semibold">{formatCurrency(reservation.total)}</td>
-                  <td className="px-4 py-3">{formatCurrency(paid)}</td>
-                  <td className="px-4 py-3">{formatCurrency(remaining)}</td>
-                  <td className="max-w-[220px] px-4 py-3 text-muted-foreground">
-                    {reservation.specialRequests ?? "-"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="relative">
+                  <td className="px-4 py-3.5 text-right">
+                    <div className="relative inline-block text-left">
                       <button
                         type="button"
                         onClick={() => toggleActionMenu(reservation)}
@@ -432,7 +433,7 @@ export function ReservationsTable({ compact = false }: Props) {
             })}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={16} className="px-4 py-12">
+                <td colSpan={6} className="px-4 py-12">
                   <div className="empty-state mx-auto max-w-xl py-10">
                     <Search className="mx-auto mb-3 size-8 text-accent" />
                     <div className="text-lg font-black text-primary">
