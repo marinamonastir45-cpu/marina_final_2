@@ -1,4 +1,11 @@
-import { generateInvoiceNumber, invoices, reservations, type Invoice } from "@/data/hotel";
+import {
+  generateInvoiceNumber,
+  invoices,
+  reservations,
+  type Invoice,
+  type PaymentStatus,
+  type Reservation,
+} from "@/data/hotel";
 import { mapInvoiceFromDb } from "@/lib/supabase/mappers";
 import {
   getSupabaseOrNull,
@@ -106,6 +113,73 @@ export async function generateInvoicePreview(reservationId: string): Promise<Inv
 
   upsertInvoiceInMock(mapped);
   return mapped;
+}
+
+/**
+ * Keeps a booking's invoice in line with its payment: once the stay is fully paid the invoice
+ * is created (or marked) as paid; if a refund reopens the balance it goes back to "issued".
+ */
+export async function syncInvoiceWithPaymentStatus(
+  reservation: Reservation,
+  paymentStatus: PaymentStatus,
+): Promise<Invoice | undefined> {
+  const supabase = await getSupabaseOrNull();
+  if (!supabase) return undefined;
+
+  const existing = await getInvoiceForReservation(reservation.id);
+  if (paymentStatus === "paid") {
+    if (existing?.status === "paid") return existing;
+    if (existing) return updateInvoiceStatus(supabase, existing, "paid");
+    return createPaidInvoice(supabase, reservation);
+  }
+  if (existing?.status === "paid") return updateInvoiceStatus(supabase, existing, "issued");
+  return existing;
+}
+
+type SupabaseClient = NonNullable<Awaited<ReturnType<typeof getSupabaseOrNull>>>;
+
+async function updateInvoiceStatus(
+  supabase: SupabaseClient,
+  invoice: Invoice,
+  status: Invoice["status"],
+) {
+  const { data, error } = await supabase
+    .from("invoices")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", invoice.id)
+    .select("*")
+    .single();
+
+  if (error) throw error;
+  const mapped = mapInvoiceFromDb(data);
+  upsertInvoiceInMock(mapped);
+  return mapped;
+}
+
+async function createPaidInvoice(supabase: SupabaseClient, reservation: Reservation) {
+  // Number from the full list so it follows the last invoice; retry if another one took it.
+  await listInvoices();
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const { data, error } = await supabase
+      .from("invoices")
+      .insert({
+        reservation_id: reservation.id,
+        invoice_number: generateInvoiceNumber(invoices.length + 1 + attempt),
+        issued_at: new Date().toISOString().slice(0, 10),
+        status: "paid",
+        amount: reservation.total,
+      })
+      .select("*")
+      .single();
+
+    if (!error) {
+      const mapped = mapInvoiceFromDb(data);
+      upsertInvoiceInMock(mapped);
+      return mapped;
+    }
+    if (error.code !== "23505") throw error; // anything but "number already used"
+  }
+  throw new Error(tr("Aucun numéro de facture disponible.", "No invoice number available."));
 }
 
 async function findReservationForInvoice(reservationId: string) {

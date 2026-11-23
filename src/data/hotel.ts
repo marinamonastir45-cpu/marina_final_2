@@ -94,6 +94,8 @@ export type Payment = {
   status: PaymentStatus;
   method: PaymentMethod;
   updatedAt: string;
+  /** Day the money was received (YYYY-MM-DD). */
+  paidAt?: string;
 };
 
 export type Invoice = {

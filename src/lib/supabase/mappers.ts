@@ -101,6 +101,7 @@ export function mapPaymentFromDb(row: PaymentRow): Payment {
     status: row.status,
     method: row.method,
     updatedAt: toDate(row.updated_at),
+    paidAt: row.paid_at ? toDate(row.paid_at) : undefined,
   };
 }
 
