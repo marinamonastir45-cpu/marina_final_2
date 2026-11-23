@@ -119,7 +119,6 @@ function ContactPage() {
           <div className="space-y-4">
             <InfoCard title={t("Appart Hôtel / Réception", "Aparthotel / Reception")}>
               <Info icon={<Phone className="size-5" />} label={t("Téléphone", "Phone")} value={settings.phone} href="tel:+21673462305" />
-              <Info icon={<Phone className="size-5" />} label={t("Fax", "Fax")} value={settings.fax} />
               <Info icon={<Mail className="size-5" />} label={t("Réservation", "Bookings")} value={settings.email} href={`mailto:${settings.email}`} />
               <Info icon={<Mail className="size-5" />} label={t("Marketing", "Marketing")} value={settings.marketingEmail} href={`mailto:${settings.marketingEmail}`} />
               <Info icon={<MapPin className="size-5" />} label={t("Adresse", "Address")} value={settings.address} />
