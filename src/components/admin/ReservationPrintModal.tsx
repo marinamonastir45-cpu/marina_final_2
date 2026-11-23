@@ -281,7 +281,7 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
             <div class="brand-subtitle">Appart Hôtel & Port de Plaisance</div>
             <div class="brand-contact">
               Port de Plaisance, BP N°60 — 5000 Monastir, Tunisie<br>
-              Tél : (+216) 73 462 305 (WhatsApp)<br>
+              Tél : (+216) 97 977 508 / (+216) 73 462 305 (WhatsApp)<br>
               Email : reservations@marinamonastir.tn · Web : www.marinamonastir.tn
             </div>
           </div>
@@ -452,7 +452,7 @@ export function ReservationPrintModal({ reservation, open, onClose }: Props) {
                 </p>
                 <div className="mt-2 text-xs leading-5 text-slate-600">
                   <p>Port de Plaisance, BP N°60 — 5000 Monastir, Tunisie</p>
-                  <p>Tél : (+216) 73 462 305 (WhatsApp)</p>
+                  <p>Tél : (+216) 97 977 508 / (+216) 73 462 305 (WhatsApp)</p>
                   <p>Email : reservations@marinamonastir.tn</p>
                 </div>
               </div>
